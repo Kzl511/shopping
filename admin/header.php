@@ -30,28 +30,27 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </li>
       </ul>
 
-      <!-- Right navbar links -->
-      <ul class="navbar-nav ml-auto">
+      <?php
+          $link = $_SERVER['PHP_SELF'];
+          $link_array = explode('/', $link);
+          $page = end($link_array);
+          ?>
+      <?php if ($page != 'order_list.php' && $page != 'order_detail.php') { ?>
+        <ul class="navbar-nav ml-auto">
         <!-- Navbar Search -->
         <li class="nav-item">
           <a class="nav-link" data-widget="navbar-search" href="#" role="button">
             <i class="fas fa-search"></i>
           </a>
-          <?php
-          $link = $_SERVER['PHP_SELF'];
-          $link_array = explode('/', $link);
-          $page = end($link_array);
-          ?>
           <div class="navbar-search-block">
             <form class="form-inline" method="post"
               <?php if ($page == 'index.php') : ?>
-                action = "index.php"
+              action="index.php"
               <?php elseif ($page == 'category.php') : ?>
-                action = "category.php"
-              <?php elseif ($page == 'user_list.php')  : ?>
-                action = "user_list.php"
-              <?php endif; ?>
-            >
+              action="category.php"
+              <?php elseif ($page == 'user_list.php') : ?>
+              action="user_list.php"
+              <?php endif; ?>>
               <input type="hidden" name="_token" value="<?php echo $_SESSION['_token']; ?>">
               <div class="input-group input-group-sm">
                 <input name="search" class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
@@ -67,12 +66,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </form>
           </div>
         </li>
+
         <li class="nav-item">
           <a class="nav-link" data-widget="fullscreen" href="#" role="button">
             <i class="fas fa-expand-arrows-alt"></i>
           </a>
         </li>
       </ul>
+      <?php } ?>
+      <!-- Right navbar links -->
     </nav>
     <!-- /.navbar -->
 
@@ -118,12 +120,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
                       Category
                     </p>
                   </a>
-                </li>               
+                </li>
                 <li class="nav-item">
                   <a href="user_list.php" class="nav-link">
                     <i class="nav-icon fas fa-user"></i>
                     <p>
                       User
+                    </p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="order_list.php" class="nav-link">
+                    <i class="nav-icon fas fa-table"></i>
+                    <p>
+                      Orders
                     </p>
                   </a>
                 </li>
