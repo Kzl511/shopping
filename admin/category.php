@@ -108,7 +108,7 @@ if (!empty($_POST['search'])) {
                         </table><br>
                         <nav aria-label="Page navigation example" style="float:right">
                             <ul class="pagination">
-                                <li class="page-item"><a class="page-link" href="?pageno=1 ">First</a></li>
+                                <li class="page-item"><a class="page-link" href="?pageno=1">First</a></li>
                                 <li class="page-item <?php if ($pageno <= 1) {
                                                             echo 'disabled';
                                                         } ?>">
