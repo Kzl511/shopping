@@ -54,6 +54,7 @@
 							<li class="nav-item">
 								<button class="search"><span class="lnr lnr-magnifier" id="search"></span></button>
 							</li>
+							<li class="nav-item"><a href="logout.php" class="logout"><span class="lnr lnr-exit"></span></a></li>
 						</ul>
 					</div>
 				</div>
