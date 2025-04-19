@@ -3,7 +3,7 @@
 	if (session_status() == PHP_SESSION_NONE) {
 		session_start();
 	}
-	
+
 	require 'config/config.php';
 	require 'config/common.php';
 ?>
@@ -71,7 +71,17 @@
 		</div>
 		<div class="search_input" id="search_input_box">
 			<div class="container">
-				<form class="d-flex justify-content-between" action="index.php" method="post">
+				<?php 
+					if (empty($_GET['category'])) { 
+				?>
+					<form class="d-flex justify-content-between" action="index.php" method="post">
+				<?php
+					} else {
+				?>
+					<form class="d-flex justify-content-between" action="index.php?category=<?php echo $_GET['category']; ?>" method="post">
+				<?php
+					}
+				?>
 					<input type="hidden" name="_token" value="<?php echo $_SESSION['_token']; ?>">
 					<input type="text" class="form-control" id="search_input" name="search" placeholder="Search Here">
 					<button type="submit" class="btn"></button>

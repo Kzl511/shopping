@@ -16,27 +16,52 @@ if (!empty($_GET['pageno'])) {
 $numOfRecs = 6;
 $offset = ($pageno - 1) * $numOfRecs;
 
-if (empty($_POST['search']) && empty($_COOKIE['search'])) {
-	$stmt = $pdo->prepare("SELECT * FROM products ORDER BY id DESC");
-	$stmt->execute();
-	$rawResult = $stmt->fetchAll();
-	$total_pages = ceil(count($rawResult) / $numOfRecs);
-
-	$stmt = $pdo->prepare("SELECT * FROM products ORDER BY id DESC LIMIT $offset, $numOfRecs");
-	$stmt->execute();
-	$result = $stmt->fetchAll();
+if (empty($_GET['category'])) {
+	if (empty($_POST['search']) && empty($_COOKIE['search'])) {
+		$stmt = $pdo->prepare("SELECT * FROM products ORDER BY id DESC");
+		$stmt->execute();
+		$rawResult = $stmt->fetchAll();
+		$total_pages = ceil(count($rawResult) / $numOfRecs);
+	
+		$stmt = $pdo->prepare("SELECT * FROM products ORDER BY id DESC LIMIT $offset, $numOfRecs");
+		$stmt->execute();
+		$result = $stmt->fetchAll();
+	} else {
+		$searchKey = $_POST['search'] ?? $_COOKIE['search'];
+		$stmt = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$searchKey%' ORDER BY id DESC");
+		$stmt->execute();
+		$rawResult = $stmt->fetchAll();
+		$total_pages = ceil(count($rawResult) / $numOfRecs);
+	
+		$stmt = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$searchKey%' ORDER BY id DESC LIMIT $offset, $numOfRecs");
+		$stmt->execute();
+		$result = $stmt->fetchAll();
+	}
 } else {
-	$searchKey = $_POST['search'] ?? $_COOKIE['search'];
-	$stmt = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$searchKey%' ORDER BY id DESC");
-	$stmt->execute();
-	$rawResult = $stmt->fetchAll();
-	$total_pages = ceil(count($rawResult) / $numOfRecs);
-
-	$stmt = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$searchKey%' ORDER BY id DESC LIMIT $offset, $numOfRecs");
-	$stmt->execute();
-	$result = $stmt->fetchAll();
+	$category_id = $_GET['category'];
+	if (empty($_POST['search']) && empty($_COOKIE['search'])) {
+		$stmt = $pdo->prepare("SELECT * FROM products WHERE category_id=$category_id ORDER BY id DESC");
+		$stmt->execute();
+		$rawResult = $stmt->fetchAll();
+		$total_pages = ceil(count($rawResult) / $numOfRecs);
+	
+		$stmt = $pdo->prepare("SELECT * FROM products WHERE category_id=$category_id ORDER BY id DESC LIMIT $offset, $numOfRecs");
+		$stmt->execute();
+		$result = $stmt->fetchAll();
+	} else {
+		$searchKey = $_POST['search'] ?? $_COOKIE['search'];
+		$stmt = $pdo->prepare("SELECT * FROM products WHERE category_id=$category_id AND name LIKE '%$searchKey%' ORDER BY id DESC");
+		$stmt->execute();
+		$rawResult = $stmt->fetchAll();
+		$total_pages = ceil(count($rawResult) / $numOfRecs);
+	
+		$stmt = $pdo->prepare("SELECT * FROM products WHERE category_id=$category_id AND name LIKE '%$searchKey%' ORDER BY id DESC LIMIT $offset, $numOfRecs");
+		$stmt->execute();
+		$result = $stmt->fetchAll();
+	}
 }
 ?>
+
 <div class="container"> 
 	<div class="row">
 		<div class="col-xl-3 col-lg-4 col-md-5">
@@ -52,10 +77,11 @@ if (empty($_POST['search']) && empty($_COOKIE['search'])) {
 						<?php 
 							foreach ($catResult as $value) {
 						?>
-						<a href="#" data-toggle="collapse"><span class="lnr lnr-arrow-right"></span><?php echo escape($value['name']); ?></a>
+						<a href="index.php?category=<?php echo $value['id']; ?>"><span class="lnr lnr-arrow-right"></span><?php echo escape($value['name']); ?></a>
 						<?php
 							}
 						?>
+						<a href="index.php"><span class="lnr lnr-arrow-right"></span>All</a>
 					</li>
 				</ul>
 			</div>
@@ -110,7 +136,7 @@ if (empty($_POST['search']) && empty($_COOKIE['search'])) {
 										<span class="ti-bag"></span>
 										<p class="hover-text">add to bag</p>
 									</a>
-									<a href="" class="social-info">
+									<a href="product_detail.php?id=<?php echo $value['id']; ?>" class="social-info">
 										<span class="lnr lnr-move"></span>
 										<p class="hover-text">view more</p>
 									</a>
