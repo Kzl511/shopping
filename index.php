@@ -1,10 +1,20 @@
 <?php
 include 'header.php';
 ?>
+
 <?php
 
 if (session_status() == PHP_SESSION_NONE) {
 	session_start();
+}
+
+if (!empty($_POST['search'])) {
+	setcookie('search', $_POST['search'], time() + (86400 * 30), "/");
+} else {
+	if (empty($_GET['pageno'])) {
+		unset($_COOKIE['search']);
+		setcookie('search', '', -1, '/');
+	}
 }
 
 if (!empty($_GET['pageno'])) {
@@ -18,44 +28,44 @@ $offset = ($pageno - 1) * $numOfRecs;
 
 if (empty($_GET['category'])) {
 	if (empty($_POST['search']) && empty($_COOKIE['search'])) {
-		$stmt = $pdo->prepare("SELECT * FROM products ORDER BY id DESC");
+		$stmt = $pdo->prepare("SELECT * FROM products WHERE quantity > 0 ORDER BY id DESC");
 		$stmt->execute();
 		$rawResult = $stmt->fetchAll();
 		$total_pages = ceil(count($rawResult) / $numOfRecs);
 	
-		$stmt = $pdo->prepare("SELECT * FROM products ORDER BY id DESC LIMIT $offset, $numOfRecs");
+		$stmt = $pdo->prepare("SELECT * FROM products WHERE quantity > 0 ORDER BY id DESC LIMIT $offset, $numOfRecs");
 		$stmt->execute();
 		$result = $stmt->fetchAll();
 	} else {
 		$searchKey = $_POST['search'] ?? $_COOKIE['search'];
-		$stmt = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$searchKey%' ORDER BY id DESC");
+		$stmt = $pdo->prepare("SELECT * FROM products WHERE quantity > 0 AND name LIKE '%$searchKey%' ORDER BY id DESC");
 		$stmt->execute();
 		$rawResult = $stmt->fetchAll();
 		$total_pages = ceil(count($rawResult) / $numOfRecs);
 	
-		$stmt = $pdo->prepare("SELECT * FROM products WHERE name LIKE '%$searchKey%' ORDER BY id DESC LIMIT $offset, $numOfRecs");
+		$stmt = $pdo->prepare("SELECT * FROM products WHERE quantity > 0 AND name LIKE '%$searchKey%' ORDER BY id DESC LIMIT $offset, $numOfRecs");
 		$stmt->execute();
 		$result = $stmt->fetchAll();
 	}
 } else {
 	$category_id = $_GET['category'];
 	if (empty($_POST['search']) && empty($_COOKIE['search'])) {
-		$stmt = $pdo->prepare("SELECT * FROM products WHERE category_id=$category_id ORDER BY id DESC");
+		$stmt = $pdo->prepare("SELECT * FROM products WHERE quantity > 0 AND category_id=$category_id ORDER BY id DESC");
 		$stmt->execute();
 		$rawResult = $stmt->fetchAll();
 		$total_pages = ceil(count($rawResult) / $numOfRecs);
 	
-		$stmt = $pdo->prepare("SELECT * FROM products WHERE category_id=$category_id ORDER BY id DESC LIMIT $offset, $numOfRecs");
+		$stmt = $pdo->prepare("SELECT * FROM products WHERE quantity > 0 AND category_id=$category_id ORDER BY id DESC LIMIT $offset, $numOfRecs");
 		$stmt->execute();
 		$result = $stmt->fetchAll();
 	} else {
 		$searchKey = $_POST['search'] ?? $_COOKIE['search'];
-		$stmt = $pdo->prepare("SELECT * FROM products WHERE category_id=$category_id AND name LIKE '%$searchKey%' ORDER BY id DESC");
+		$stmt = $pdo->prepare("SELECT * FROM products WHERE quantity > 0 AND category_id=$category_id AND name LIKE '%$searchKey%' ORDER BY id DESC");
 		$stmt->execute();
 		$rawResult = $stmt->fetchAll();
 		$total_pages = ceil(count($rawResult) / $numOfRecs);
 	
-		$stmt = $pdo->prepare("SELECT * FROM products WHERE category_id=$category_id AND name LIKE '%$searchKey%' ORDER BY id DESC LIMIT $offset, $numOfRecs");
+		$stmt = $pdo->prepare("SELECT * FROM products WHERE quantity > 0 AND category_id=$category_id AND name LIKE '%$searchKey%' ORDER BY id DESC LIMIT $offset, $numOfRecs");
 		$stmt->execute();
 		$result = $stmt->fetchAll();
 	}
@@ -132,14 +142,21 @@ if (empty($_GET['category'])) {
 									<h6>$<?php echo escape($value['price']); ?></h6>
 								</div>
 								<div class="prd-bottom">
-									<a href="" class="social-info">
-										<span class="ti-bag"></span>
-										<p class="hover-text">add to bag</p>
-									</a>
-									<a href="product_detail.php?id=<?php echo $value['id']; ?>" class="social-info">
-										<span class="lnr lnr-move"></span>
-										<p class="hover-text">view more</p>
-									</a>
+									<form action="addtocart.php" method="post">
+										<input type="hidden" name="_token" value="<?php echo $_SESSION['_token'] ?>">
+										<input type="hidden" name="id" value="<?php echo $value['id'] ?>">
+										<input type="hidden" name="qty" value="1">
+
+										<div class="social-info">
+											<button type="submit" style="display: contents" class="social-info">
+												<span class="ti-bag"></span><p class="hover-text" style="left: 25px;">Add to cart</p>
+											</button>
+										</div>
+										<a href="product_detail.php?id=<?php echo $value['id']; ?>" class="social-info">
+											<span class="lnr lnr-move"></span>
+											<p class="hover-text">view more</p>
+										</a>
+									</form>
 								</div>
 							</div>
 						</div>
