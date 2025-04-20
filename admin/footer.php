@@ -27,7 +27,8 @@
 <!-- REQUIRED SCRIPTS -->
 
 <!-- jQuery -->
-<script src="plugins/jquery/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.js" charset="utf-8"></script>
+<script src="https://cdn.datatables.net/2.2.2/js/dataTables.js" charset="utf-8"></script>
 <!-- Bootstrap 4 -->
 <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- AdminLTE App -->

@@ -16,6 +16,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
   <!-- Theme style -->
   <link rel="stylesheet" href="dist/css/adminlte.min.css">
+  <script src="https://code.jquery.com/jquery-3.7.1.js" charset="utf-8"></script>
+  <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js" charset="utf-8"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css">
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -140,6 +143,41 @@ scratch. This page gets rid of all links and provides the needed markup only.
                     </p>
                   </a>
                 </li>
+                <li class="nav-item">
+                  <a href="#" class="nav-link">
+                    <i class="nav-icon fas fa-tachometer-alt"></i>
+                    <p>
+                      Reports
+                      <i class="right fas fa-angle-left"></i>
+                    </p>
+                  </a>
+                  <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                      <a href="weekly_report.php" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Weekly Reports</p>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="monthly_report.php" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Monthly Reports</p>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="royal_cus.php" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Royal Customers</p>
+                      </a>
+                    </li>
+                    <li class="nav-item">
+                      <a href="best_selling.php" class="nav-link">
+                        <i class="far fa-circle nav-icon"></i>
+                        <p>Best Selling Items</p>
+                      </a>
+                    </li>
+                  </ul>
+                </li> 
               </ul>
         </nav>
         <!-- /.sidebar-menu -->

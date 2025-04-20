@@ -53,10 +53,6 @@ if (!empty($_POST['search'])) {
                     ?>
                     <!-- /.card-header -->
                     <div class="card-body">
-                        <div>
-                            <a href="cat_add.php" type="button" class="btn btn-success">New Category</a>
-                        </div>
-                        <br>
                         <table class="table table-bordered">
                             <thead>
                                 <tr>

@@ -36,58 +36,67 @@ if ($_POST) {
             $imgError = 'Product image is required.';
         }
     } else {
-        if ($_FILES['image']['name'] != null) {
-            $file = 'images/'.($_FILES['image']['name']);
-            $imageType = pathinfo($file, PATHINFO_EXTENSION);
-    
-            if ($imageType != 'jpeg' && $imageType != 'jpg' && $imageType != 'png') {
-                echo "<script>alert('Image should be in JPEG or JPG or PNG.');</script>";
+        if (is_numeric($_POST['quantity']) != 1) {
+            $qtyError = 'Quantity should be numeric.';
+        }
+        if (is_numeric($_POST['price']) != 1) {
+            $priceError = 'Price should be numeric.';
+        }
+
+        if ($qtyError == '' && $priceError == '') {
+            if ($_FILES['image']['name'] != null) {
+                $file = 'images/'.($_FILES['image']['name']);
+                $imageType = pathinfo($file, PATHINFO_EXTENSION);
+        
+                if ($imageType != 'jpeg' && $imageType != 'jpg' && $imageType != 'png') {
+                    echo "<script>alert('Image should be in JPEG or JPG or PNG.');</script>";
+                } else {
+                    $name = $_POST['name'];
+                    $description = $_POST['description'];
+                    $category = $_POST['category'];
+                    $quantity = $_POST['quantity'];
+                    $price = $_POST['price'];
+                    $image = $_FILES['image']['name'];
+        
+                    move_uploaded_file($_FILES['image']['tmp_name'], $file);
+                    
+                    $stmt = $pdo->prepare("UPDATE products SET name=:name, description=:description, category_id=:category, quantity=:quantity, price=:price, image=:image WHERE id=".$_GET['id']);
+                    $result = $stmt->execute(
+                        array(
+                            ':name' => $name,
+                            ':description' => $description,
+                            ':category' => $category,
+                            ':quantity' => $quantity,
+                            ':price' => $price,
+                            ':image' => $image
+                        )
+                    );
+        
+                    if ($result) {
+                        echo "<script>alert('Product updated successfully.'); window.location.href='index.php';</script>";
+                    }
+                }           
             } else {
                 $name = $_POST['name'];
                 $description = $_POST['description'];
                 $category = $_POST['category'];
                 $quantity = $_POST['quantity'];
                 $price = $_POST['price'];
-                $image = $_FILES['image']['name'];
-    
-                move_uploaded_file($_FILES['image']['tmp_name'], $file);
                 
-                $stmt = $pdo->prepare("UPDATE products SET name=:name, description=:description, category_id=:category, quantity=:quantity, price=:price, image=:image WHERE id=".$_GET['id']);
+                $stmt = $pdo->prepare("UPDATE products SET name=:name, description=:description, category_id=:category, quantity=:quantity, price=:price WHERE id=".$_GET['id']);
                 $result = $stmt->execute(
                     array(
                         ':name' => $name,
                         ':description' => $description,
                         ':category' => $category,
                         ':quantity' => $quantity,
-                        ':price' => $price,
-                        ':image' => $image
+                        ':price' => $price
                     )
                 );
     
                 if ($result) {
                     echo "<script>alert('Product updated successfully.'); window.location.href='index.php';</script>";
                 }
-            }           
-        } else {
-            $name = $_POST['name'];
-            $description = $_POST['description'];
-            $category = $_POST['category'];
-            $quantity = $_POST['quantity'];
-            $price = $_POST['price'];
-            
-            $stmt = $pdo->prepare("UPDATE products SET name=:name, description=:description, category_id=:category, quantity=:quantity, price=:price WHERE id=".$_GET['id']);
-            $result = $stmt->execute(
-                array(
-                    ':name' => $name,
-                    ':description' => $description,
-                    ':category' => $category,
-                    ':quantity' => $quantity,
-                    ':price' => $price
-                )
-            );
-
-            if ($result) {
-                echo "<script>alert('Product updated successfully.'); window.location.href='index.php';</script>";
             }
         }
     }
@@ -142,11 +151,11 @@ $result = $stmt->fetchAll();
                             </div> 
                             <div class="form-group">
                                 <label for="">Quantity</label><p style="color: red"><?php echo empty($qtyError) ? '' : '*' . $qtyError ?></p>
-                                <input type="number" name="quantity" class="form-control" value="<?php echo escape($result[0]['quantity']) ?>">
+                                <input type="text" name="quantity" class="form-control" value="<?php echo escape($result[0]['quantity']) ?>">
                             </div>
                             <div class="form-group">
                                 <label for="">Price</label><p style="color: red"><?php echo empty($priceError) ? '' : '*' . $priceError ?></p>
-                                <input type="number" name="price" class="form-control" value="<?php echo escape($result[0]['price']) ?>">
+                                <input type="text" name="price" class="form-control" value="<?php echo escape($result[0]['price']) ?>">
                             </div>
                             <div class="form-group">
                                 <label for="">Image</label><p style="color: red"><?php echo empty($imgError) ? '' : '*' . $imgError ?></p>
